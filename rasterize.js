@@ -45,7 +45,7 @@ var specularAttrib;
 var specularExpAttrib;
 var modelIdxAttrib;
 var eyePositionUniform;
-var lightLocPositionUniform;
+var lightPositionUniform;
 var viewMatrixUniform;
 var projMatrixUniform;
 var transformMatrixUniform;
@@ -232,7 +232,7 @@ function setupShaders() {
         attribute vec3 specular;
         attribute float factor;
         attribute float modelIdx;
-        uniform vec3 lightLocPosition;
+        uniform vec3 lightPosition;
         uniform vec3 eyePos;
         uniform mat4 vMat;
         uniform mat4 pMat;
@@ -248,7 +248,7 @@ function setupShaders() {
             mat4 transform = (modelIdx == selectedModel) ? tMat : mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);  // apply transformation if selected model, identity otherwise
             gl_Position = pMat * vMat * transform * vec4(vtxPos, 1.0);
             vec3 N = vtxNormal;
-            vec3 L = normalize(lightLocPosition - vtxPos);
+            vec3 L = normalize(lightPosition - vtxPos);
             float NdotL = dot(N, L);
             vec3 V = normalize(eyePos - vtxPos);
             vec3 H = normalize(L+V);
@@ -315,8 +315,8 @@ function setupShaders() {
                 modelIdxAttrib = gl.getAttribLocation(shaderProgram, "modelIdx");
                 gl.enableVertexAttribArray(modelIdxAttrib);
 
-                lightLocPositionUniform = gl.getUniformLocation(shaderProgram, 'lightLocPosition');
-                gl.uniform3fv(lightLocPositionUniform, lightLoc);
+                lightPositionUniform = gl.getUniformLocation(shaderProgram, 'lightPosition');
+                gl.uniform3fv(lightPositionUniform, lightLoc);
 
                 eyePositionUniform = gl.getUniformLocation(shaderProgram, 'eyePos');
                 gl.uniform3fv(eyePositionUniform, Eye);
