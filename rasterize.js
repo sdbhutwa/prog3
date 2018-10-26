@@ -91,8 +91,8 @@ function getJSONFile(url,descr) {
     }
 } // end get json file
 
-// set upVector the webGL environment
-function setupVectorWebGL() {
+// set up the webGL environment
+function setupWebGL() {
 
     // Get the canvas and context
     var canvas = document.getElementById("myWebGLCanvas"); // create a js canvas
@@ -114,7 +114,7 @@ function setupVectorWebGL() {
         console.log(e);
     } // end catch
 
-} // end setupVectorWebGL
+} // end setupWebGL
 
 // read triangles in, load them into webgl buffers
 function loadTriangles(){
@@ -138,7 +138,7 @@ function loadTriangles(){
         var modelIdxArray = [];
 
         for (var whichSet=0; whichSet<inputTriangles.length; whichSet++) {
-            vec3.set(idxOffset,vertexBufferSize,vertexBufferSize,vertexBufferSize); // upVectordate vertex start
+            vec3.set(idxOffset,vertexBufferSize,vertexBufferSize,vertexBufferSize); // update vertex start
             var ambientTerm = inputTriangles[whichSet].material.ambient;
             var diffuseTerm = inputTriangles[whichSet].material.diffuse;
             var specularTerm = inputTriangles[whichSet].material.specular;
@@ -159,7 +159,7 @@ function loadTriangles(){
                 vec3.add(center, center, addVertex);
             } 
 
-            // set upVector the triangle index array, adjusting indices across sets
+            // set up the triangle index array, adjusting indices across sets
             for (whichSetTri=0; whichSetTri<inputTriangles[whichSet].triangles.length; whichSetTri++) {
                 vec3.add(triToAdd,idxOffset,inputTriangles[whichSet].triangles[whichSetTri]);
                 indexArray.push(triToAdd[0],triToAdd[1],triToAdd[2]);
@@ -210,7 +210,7 @@ function loadTriangles(){
     } // end if triangles found
 } // end load triangles
 
-// setupVector the webGL shaders
+// setup the webGL shaders
 function setupShaders() {
 
     // define fragment shader in essl using es6 template strings
@@ -338,7 +338,7 @@ function setupShaders() {
     catch(e) {
         console.log(e);
     } // end catch
-} // end setupVector shaders
+} // end setup shaders
 
 // render the loaded model
 function renderTriangles(){
@@ -376,12 +376,12 @@ function renderTriangles(){
 /* MAIN -- HERE is where execution begins after window load */
 
 function main() {
-    setupVectorWebGL(); // set upVector the webGL environment
+    setupWebGL(); // set up the webGL environment
     loadTriangles(); // load in the triangles from tri file
-    setupShaders(); // setupVector the webGL shaders
+    setupShaders(); // setup the webGL shaders
 
     document.onkeydown = handleKeyPress;
-    document.onkeyupVector = handleKeyRelease;
+    document.onkeyup = handleKeyRelease;
     handleEvents(); // draw the triangles using webGL
 } // end main
 
@@ -493,7 +493,7 @@ function handleEvents(){
   if(!currentKeys[16] && currentKeys[186]){              // ; --> translate selected model right
     mat4.translate(transformMatrix, transformMatrix, [-translateInc, 0, 0]);
   }
-  if(!currentKeys[16] && currentKeys[73]){              // i --> translate selected model upVector
+  if(!currentKeys[16] && currentKeys[73]){              // i --> translate selected model up
     mat4.translate(transformMatrix, transformMatrix, [0, translateInc, 0]);
   }
   if(!currentKeys[16] && currentKeys[80]){              // p --> translate selected model down
