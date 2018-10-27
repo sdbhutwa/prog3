@@ -6,11 +6,9 @@ const WIN_LEFT = 0; const WIN_RIGHT = 1;  // default left and right x coords in 
 const WIN_BOTTOM = 0; const WIN_TOP = 1;  // default top and bottom y coords in world space
 const INPUT_TRIANGLES_URL = "https://ncsucgclass.github.io/prog2/triangles.json"; // triangles file loc
 const INPUT_SPHERES_URL = "https://ncsucgclass.github.io/prog2/ellipsoids.json"; // ellipsoids file loc
-
 var eye = new vec3.fromValues(0.5, 0.5, -0.5);    // default eye position in world space
 var lookAt = new vec3.fromValues(0, 0, 1);        // look at vector
 var up = new vec3.fromValues(0, 1, 0);        // view up vector
-
 var light = new vec3.fromValues(-1, 3, -0.5);     // default light location in world space
 
 /* webgl globals */
@@ -351,7 +349,7 @@ function setupShaders() {
 } // end setup shaders
 
 // render the loaded model
-function renderModel(){
+function renderTriangles(){
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // clear frame/depth buffers
 
     // activate and feed buffers into vertex shader
@@ -382,24 +380,10 @@ function renderModel(){
 
 } // end render triangles and ellipsoids
 
+var currentPressedKeys = {};
 
-/* MAIN -- HERE is where execution begins after window load */
-
-function main() {
-    setupWebGL(); // set up the webGL environment
-    loadTriangles(); // load in the triangles from tri file
-    setupShaders(); // setup the webGL shaders
-
-    document.onkeydown = handleKeyDown;
-    document.onkeyup = handleKeyUp;
-
-    handleKeysAndRender(); // draw the triangles and ellipsoids using webGL
-} // end main
-
-var currentlyPressedKeys = {};
-
-function handleKeyDown(event){
-  currentlyPressedKeys[event.keyCode] = true;
+function handleKeyPressed(event){
+  currentPressedKeys[event.keyCode] = true;
 
   if(event.keyCode == 37){                                                      // Left Arrow --> select previous triangle
     selectedTriangle = selectedTriangle-1.0;
@@ -431,53 +415,53 @@ function handleKeyDown(event){
   }
 }
 
-function handleKeyUp(event){
-  currentlyPressedKeys[event.keyCode] = false;
+function handleKeyRelease(event){
+  currentPressedKeys[event.keyCode] = false;
 }
 
-function handleKeysAndRender(){
-  requestAnimationFrame(handleKeysAndRender);
+function handleEvents(){
+  requestAnimationFrame(handleEvents);
 
   var translateIncrement = 0.01;
   var rotateIncrement = glMatrix.toRadian(1);
   var mCenter = modelCenters[selectedModel];
 
-  if(!currentlyPressedKeys[16] && currentlyPressedKeys[65]){             // a --> translate left
+  if(!currentPressedKeys[16] && currentPressedKeys[65]){             // a --> translate left
     vec3.add(eye, eye, [translateIncrement, 0, 0]);
   }
-  if(!currentlyPressedKeys[16] && currentlyPressedKeys[68]){             // d --> translate right
+  if(!currentPressedKeys[16] && currentPressedKeys[68]){             // d --> translate right
     vec3.add(eye, eye, [-translateIncrement, 0, 0]);
   }
-  if(!currentlyPressedKeys[16] && currentlyPressedKeys[87]){             // w --> translate forward
+  if(!currentPressedKeys[16] && currentPressedKeys[87]){             // w --> translate forward
     vec3.add(eye, eye, [0, 0, translateIncrement]);
   }
-  if(!currentlyPressedKeys[16] && currentlyPressedKeys[83]){             // s --> translate backward
+  if(!currentPressedKeys[16] && currentPressedKeys[83]){             // s --> translate backward
     vec3.add(eye, eye, [0, 0, -translateIncrement]);
   }
-  if(!currentlyPressedKeys[16] && currentlyPressedKeys[81]){             // q --> translate up
+  if(!currentPressedKeys[16] && currentPressedKeys[81]){             // q --> translate up
     vec3.add(eye, eye, [0, translateIncrement, 0]);
   }
-  if(!currentlyPressedKeys[16] && currentlyPressedKeys[69]){             // e --> translate down
+  if(!currentPressedKeys[16] && currentPressedKeys[69]){             // e --> translate down
     vec3.add(eye, eye, [0, -translateIncrement, 0]);
   }
 
-  if(currentlyPressedKeys[16] && currentlyPressedKeys[65]){             // A --> rotate left around Y axis
+  if(currentPressedKeys[16] && currentPressedKeys[65]){             // A --> rotate left around Y axis
     vec3.rotateY(lookAt, lookAt, [0, 0, 0], rotateIncrement);
   }
-  if(currentlyPressedKeys[16] && currentlyPressedKeys[68]){             // D --> rotate right around Y axis
+  if(currentPressedKeys[16] && currentPressedKeys[68]){             // D --> rotate right around Y axis
     vec3.rotateY(lookAt, lookAt, [0, 0, 0], -rotateIncrement);
   }
-  if(currentlyPressedKeys[16] && currentlyPressedKeys[87]){             // W --> rotate left around X axis
+  if(currentPressedKeys[16] && currentPressedKeys[87]){             // W --> rotate left around X axis
     vec3.rotateX(lookAt, lookAt, [0, 0, 0], rotateIncrement);
     vec3.rotateX(up, up, [0, 0, 0], rotateIncrement);
   }
-  if(currentlyPressedKeys[16] && currentlyPressedKeys[83]){             // S --> rotate right around X axis
+  if(currentPressedKeys[16] && currentPressedKeys[83]){             // S --> rotate right around X axis
     vec3.rotateX(lookAt, lookAt, [0, 0, 0], -rotateIncrement);
     vec3.rotateX(up, up, [0, 0, 0], -rotateIncrement);
   }
 
-  if(currentlyPressedKeys[37] || currentlyPressedKeys[39]
-      || currentlyPressedKeys[38] || currentlyPressedKeys[40]){             // Left, Right, Up or Down Key --> scale selected model
+  if(currentPressedKeys[37] || currentPressedKeys[39]
+      || currentPressedKeys[38] || currentPressedKeys[40]){             // Left, Right, Up or Down Key --> scale selected model
     ambientIncrement = 0.0;
     diffuseIncrement = 0.0;
     specularIncrement = 0.0;
@@ -489,7 +473,7 @@ function handleKeysAndRender(){
     mat4.translate(transformMatrix, transformMatrix, [-mCenter[0], -mCenter[1], -mCenter[2]]);
   }
 
-  if(currentlyPressedKeys[32]){                                           // Space --> unselect model
+  if(currentPressedKeys[32]){                                           // Space --> unselect model
     mat4.identity(transformMatrix);
   }
 
@@ -508,5 +492,16 @@ function handleKeysAndRender(){
   gl.uniform1f(specularIncrementUniform, specularIncrement);
   gl.uniform1f(expIncrementUniform, expIncrement);
 
-  renderModel();
+  renderTriangles();
 }
+
+/* MAIN -- HERE is where execution begins after window load */
+
+function main() {
+    setupWebGL(); // set up the webGL environment
+    loadTriangles(); // load in the triangles from tri file
+    setupShaders(); // setup the webGL shaders
+    document.onkeydown = handleKeyPressed;
+    document.onkeyup = handleKeyRelease;
+    handleEvents(); // draw the triangles and ellipsoids using webGL
+} // end main
