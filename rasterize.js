@@ -9,7 +9,7 @@ const INPUT_SPHERES_URL = "https://ncsucgclass.github.io/prog2/ellipsoids.json";
 var eye = new vec3.fromValues(0.5, 0.5, -0.5);    // default eye position in world space
 var lookAt = new vec3.fromValues(0, 0, 1);        // look at vector
 var up = new vec3.fromValues(0, 1, 0);        // view up vector
-var light = new vec3.fromValues(-1, 3, -0.5);     // default light location in world space
+var light = new vec3.fromValues(-3,1,-0.5);     // default light location in world space
 
 /* webgl globals */
 var gl = null; // the all powerful gl object. It's all here folks!
