@@ -19,14 +19,14 @@ var gl = null; // the all powerful gl object. It's all here folks!
 // buffers for vertex shader
 var triangleBuffer = 0; // the number of indices in the triangle buffer
 var vertexBuffer; // this contains vertex coordinates in triangles
-var vtxPosAttrib;
+var vertexPositionAttrib;
 var indexBuffer; // this contains indices into vertexBuffer in triangles
 var normalBuffer;  // normals in traingles
 var ambientBuffer; // ambient terms in triangles
 var diffuseBuffer; // diffuse terms in triangles
 var specularBuffer; // specular terms in triangles
 var specularExpoBuffer;   // specular exponent in triangles
-var modelIdxBuffer;      // index of the model that a vertex belongs to
+var modelIndexBuffer;      // index of the model that a vertex belongs to
 
 var viewMatrix = mat4.create();   // view matrix
 var projMatrix = mat4.create();   // projection matrix
@@ -38,7 +38,7 @@ var diffuseInc = 0.0;           // increment for diffuse weight
 var specularInc = 0.0;          // increment for specular weight
 var expInc = 0.0;              // increment for specular exponent
 
-var vtxNormalAttrib;
+var vertexNormalAttrib;
 var ambientAttrib;
 var diffuseAttrib;
 var specularAttrib;
@@ -198,8 +198,8 @@ function loadTriangles(){
         gl.bindBuffer(gl.ARRAY_BUFFER, specularExpoBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(specularExpArray), gl.STATIC_DRAW);
 
-        modelIdxBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, modelIdxBuffer);
+        modelIndexBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, modelIndexBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(modelIdxArray), gl.STATIC_DRAW);
 
         // send the triangle indices to webGL
@@ -293,12 +293,12 @@ function setupShaders() {
                 throw "error during shader program linking: " + gl.getProgramInfoLog(shaderProgram);
             } else { // no shader program link errors
                 gl.useProgram(shaderProgram); // activate shader program (frag and vert)
-                vtxPosAttrib = // get pointer to vertex shader input
+                vertexPositionAttrib = // get pointer to vertex shader input
                     gl.getAttribLocation(shaderProgram, "vtxPos");
-                gl.enableVertexAttribArray(vtxPosAttrib); // input to shader from array
+                gl.enableVertexAttribArray(vertexPositionAttrib); // input to shader from array
 
-                vtxNormalAttrib =gl.getAttribLocation(shaderProgram, "vtxNormal");
-                gl.enableVertexAttribArray(vtxNormalAttrib);
+                vertexNormalAttrib =gl.getAttribLocation(shaderProgram, "vtxNormal");
+                gl.enableVertexAttribArray(vertexNormalAttrib);
 
                 ambientAttrib = gl.getAttribLocation(shaderProgram, "ambient");
                 gl.enableVertexAttribArray(ambientAttrib);
@@ -346,10 +346,10 @@ function renderTriangles(){
 
     // activate and feed buffers into vertex shader
     gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffer); // activate
-    gl.vertexAttribPointer(vtxPosAttrib,3,gl.FLOAT,false,0,0); // feed
+    gl.vertexAttribPointer(vertexPositionAttrib,3,gl.FLOAT,false,0,0); // feed
 
     gl.bindBuffer(gl.ARRAY_BUFFER,normalBuffer);
-    gl.vertexAttribPointer(vtxNormalAttrib,3,gl.FLOAT,false,0,0);
+    gl.vertexAttribPointer(vertexNormalAttrib,3,gl.FLOAT,false,0,0);
 
     gl.bindBuffer(gl.ARRAY_BUFFER,ambientBuffer);
     gl.vertexAttribPointer(ambientAttrib,3,gl.FLOAT,false,0,0);
@@ -363,7 +363,7 @@ function renderTriangles(){
     gl.bindBuffer(gl.ARRAY_BUFFER, specularExpoBuffer);
     gl.vertexAttribPointer(specularExpAttrib, 1, gl.FLOAT, false, 0, 0);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, modelIdxBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, modelIndexBuffer);
     gl.vertexAttribPointer(modelIdxAttrib, 1, gl.FLOAT, false, 0, 0);
 
     // triangle buffer: activate and render
