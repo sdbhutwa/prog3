@@ -420,106 +420,107 @@ function handleKeyRelease(event){
 }
 
 function handleEvents(){
-  requestAnimationFrame(handleEvents);
-
-  var translateIncrement = 0.01;
-  var rotateIncrement = glMatrix.toRadian(1);
-  var mCenter = modelCenters[selectedModel];
-
-  if(!currentPressedKeys[16] && currentPressedKeys[65]){             // a --> translate left
-    vec3.add(eye, eye, [translateIncrement, 0, 0]);
-  }
-  if(!currentPressedKeys[16] && currentPressedKeys[68]){             // d --> translate right
-    vec3.add(eye, eye, [-translateIncrement, 0, 0]);
-  }
-  if(!currentPressedKeys[16] && currentPressedKeys[87]){             // w --> translate forward
-    vec3.add(eye, eye, [0, 0, translateIncrement]);
-  }
-  if(!currentPressedKeys[16] && currentPressedKeys[83]){             // s --> translate backward
-    vec3.add(eye, eye, [0, 0, -translateIncrement]);
-  }
-  if(!currentPressedKeys[16] && currentPressedKeys[81]){             // q --> translate up
-    vec3.add(eye, eye, [0, translateIncrement, 0]);
-  }
-  if(!currentPressedKeys[16] && currentPressedKeys[69]){             // e --> translate down
-    vec3.add(eye, eye, [0, -translateIncrement, 0]);
-  }
-
-  if(currentPressedKeys[16] && currentPressedKeys[65]){             // A --> rotate left around Y axis
-    vec3.rotateY(lookAt, lookAt, [0, 0, 0], rotateIncrement);
-  }
-  if(currentPressedKeys[16] && currentPressedKeys[68]){             // D --> rotate right around Y axis
-    vec3.rotateY(lookAt, lookAt, [0, 0, 0], -rotateIncrement);
-  }
-  if(currentPressedKeys[16] && currentPressedKeys[87]){             // W --> rotate left around X axis
-    vec3.rotateX(lookAt, lookAt, [0, 0, 0], rotateIncrement);
-    vec3.rotateX(up, up, [0, 0, 0], rotateIncrement);
-  }
-  if(currentPressedKeys[16] && currentPressedKeys[83]){             // S --> rotate right around X axis
-    vec3.rotateX(lookAt, lookAt, [0, 0, 0], -rotateIncrement);
-    vec3.rotateX(up, up, [0, 0, 0], -rotateIncrement);
-  }
-
-  if(currentPressedKeys[37] || currentPressedKeys[39]
-      || currentPressedKeys[38] || currentPressedKeys[40]){             // Left, Right, Up or Down Key --> scale selected model
-    ambientIncrement = 0.0;
-    diffuseIncrement = 0.0;
-    specularIncrement = 0.0;
-    expIncrement = 0.0;
-
-    mat4.identity(transformMatrix);
-    mat4.translate(transformMatrix, transformMatrix, mCenter);
-    mat4.scale(transformMatrix, transformMatrix, [1.2, 1.2, 1.2]);
-    mat4.translate(transformMatrix, transformMatrix, [-mCenter[0], -mCenter[1], -mCenter[2]]);
-  }
-
-  if(currentPressedKeys[32]){                                           // Space --> unselect model
-    mat4.identity(transformMatrix);
-  }
-
-  if(!currentlyPressedKeys[16] && currentlyPressedKeys[75]){              // k --> translate selected model left
-    mat4.translate(transformMatrix, transformMatrix, [translateIncrement, 0, 0]);
-  }
-  if(!currentlyPressedKeys[16] && currentlyPressedKeys[186]){              // ; --> translate selected model right
-    mat4.translate(transformMatrix, transformMatrix, [-translateIncrement, 0, 0]);
-  }
-  if(!currentlyPressedKeys[16] && currentlyPressedKeys[79]){              // o --> translate selected model forward
-    mat4.translate(transformMatrix, transformMatrix, [0, 0, translateIncrement]);
-  }
-  if(!currentlyPressedKeys[16] && currentlyPressedKeys[76]){              // l --> translate selected model backward
-    mat4.translate(transformMatrix, transformMatrix, [0, 0, -translateIncrement]);
-  }
-  if(!currentlyPressedKeys[16] && currentlyPressedKeys[73]){              // i --> translate selected model up
-    mat4.translate(transformMatrix, transformMatrix, [0, translateIncrement, 0]);
-  }
-  if(!currentlyPressedKeys[16] && currentlyPressedKeys[80]){              // p --> translate selected model down
-    mat4.translate(transformMatrix, transformMatrix, [0, -translateIncrement, 0]);
-  }
-
-  if(currentlyPressedKeys[16] && (currentlyPressedKeys[75] || currentlyPressedKeys[186] || currentlyPressedKeys[79] || currentlyPressedKeys[76] || currentlyPressedKeys[73] || currentlyPressedKeys[80])){
-
-    mat4.translate(transformMatrix, transformMatrix, mCenter);
-    if(currentlyPressedKeys[75]){                                   // K --> rotate selected model left around X axis
-      mat4.rotateY(transformMatrix, transformMatrix, rotateIncrement);
+    requestAnimationFrame(handleEvents);
+  
+    var translateIncrement = 0.01;
+    var rotateIncrement = glMatrix.toRadian(1);
+    var mCenter = modelCenters[selectedModel];
+  
+    if(!currentPressedKeys[16] && currentPressedKeys[65]){             // a --> translate left
+      vec3.add(eye, eye, [translateIncrement, 0, 0]);
     }
-    if(currentlyPressedKeys[186]){                                  // : --> rotate selected model right around Y axis
-      mat4.rotateY(transformMatrix, transformMatrix, -rotateIncrement);
+    if(!currentPressedKeys[16] && currentPressedKeys[68]){             // d --> translate right
+      vec3.add(eye, eye, [-translateIncrement, 0, 0]);
     }
-    if(currentlyPressedKeys[79]){                                   // O --> rotate selected model forward around X
-      mat4.rotateX(transformMatrix, transformMatrix, rotateIncrement);
+    if(!currentPressedKeys[16] && currentPressedKeys[87]){             // w --> translate forward
+      vec3.add(eye, eye, [0, 0, translateIncrement]);
     }
-    if(currentlyPressedKeys[76]){                                   // L --> rotate selected model backward around X
-      mat4.rotateX(transformMatrix, transformMatrix, -rotateIncrement);
+    if(!currentPressedKeys[16] && currentPressedKeys[83]){             // s --> translate backward
+      vec3.add(eye, eye, [0, 0, -translateIncrement]);
     }
-    if(currentlyPressedKeys[73]){                                   // I --> rotate selected model clockwise around Z
-      mat4.rotateZ(transformMatrix, transformMatrix, rotateIncrement);
+    if(!currentPressedKeys[16] && currentPressedKeys[81]){             // q --> translate up
+      vec3.add(eye, eye, [0, translateIncrement, 0]);
     }
-    if(currentlyPressedKeys[80]){                                   // P --> rotate selected model counter-clockwise around Z
-      mat4.rotateZ(transformMatrix, transformMatrix, -rotateIncrement);
+    if(!currentPressedKeys[16] && currentPressedKeys[69]){             // e --> translate down
+      vec3.add(eye, eye, [0, -translateIncrement, 0]);
     }
-
-    mat4.translate(transformMatrix, transformMatrix, [-mCenter[0], -mCenter[1], -mCenter[2]]);
-  }
+  
+    if(currentPressedKeys[16] && currentPressedKeys[65]){             // A --> rotate left around Y axis
+      vec3.rotateY(lookAt, lookAt, [0, 0, 0], rotateIncrement);
+    }
+    if(currentPressedKeys[16] && currentPressedKeys[68]){             // D --> rotate right around Y axis
+      vec3.rotateY(lookAt, lookAt, [0, 0, 0], -rotateIncrement);
+    }
+    if(currentPressedKeys[16] && currentPressedKeys[87]){             // W --> rotate left around X axis
+      vec3.rotateX(lookAt, lookAt, [0, 0, 0], rotateIncrement);
+      vec3.rotateX(up, up, [0, 0, 0], rotateIncrement);
+    }
+    if(currentPressedKeys[16] && currentPressedKeys[83]){             // S --> rotate right around X axis
+      vec3.rotateX(lookAt, lookAt, [0, 0, 0], -rotateIncrement);
+      vec3.rotateX(up, up, [0, 0, 0], -rotateIncrement);
+    }
+  
+    if(currentPressedKeys[37] || currentPressedKeys[39]
+        || currentPressedKeys[38] || currentPressedKeys[40]){             // Left, Right, Up or Down Key --> scale selected model
+      ambientIncrement = 0.0;
+      diffuseIncrement = 0.0;
+      specularIncrement = 0.0;
+      expIncrement = 0.0;
+  
+      mat4.identity(transformMatrix);
+      mat4.translate(transformMatrix, transformMatrix, mCenter);
+      mat4.scale(transformMatrix, transformMatrix, [1.2, 1.2, 1.2]);
+      mat4.translate(transformMatrix, transformMatrix, [-mCenter[0], -mCenter[1], -mCenter[2]]);
+    }
+  
+    if(currentPressedKeys[32]){                                           // Space --> unselect model
+      mat4.identity(transformMatrix);
+    }
+  
+    if(!currentPressedKeys[16] && currentPressedKeys[75]){              // k --> translate selected model left
+      mat4.translate(transformMatrix, transformMatrix, [translateIncrement, 0, 0]);
+    }
+    if(!currentPressedKeys[16] && currentPressedKeys[186]){              // ; --> translate selected model right
+      mat4.translate(transformMatrix, transformMatrix, [-translateIncrement, 0, 0]);
+    }
+    if(!currentPressedKeys[16] && currentPressedKeys[79]){              // o --> translate selected model forward
+      mat4.translate(transformMatrix, transformMatrix, [0, 0, translateIncrement]);
+    }
+    if(!currentPressedKeys[16] && currentPressedKeys[76]){              // l --> translate selected model backward
+      mat4.translate(transformMatrix, transformMatrix, [0, 0, -translateIncrement]);
+    }
+    if(!currentPressedKeys[16] && currentPressedKeys[73]){              // i --> translate selected model up
+      mat4.translate(transformMatrix, transformMatrix, [0, translateIncrement, 0]);
+    }
+    if(!currentPressedKeys[16] && currentPressedKeys[80]){              // p --> translate selected model down
+      mat4.translate(transformMatrix, transformMatrix, [0, -translateIncrement, 0]);
+    }
+  
+    if(currentPressedKeys[16] && (currentPressedKeys[75] || currentPressedKeys[186] || currentPressedKeys[79] || currentPressedKeys[76]
+                                  || currentPressedKeys[73] || currentPressedKeys[80])){
+  
+      mat4.translate(transformMatrix, transformMatrix, mCenter);
+      if(currentPressedKeys[75]){                                   // K --> rotate selected model left around X axis
+        mat4.rotateY(transformMatrix, transformMatrix, rotateIncrement);
+      }
+      if(currentPressedKeys[186]){                                  // : --> rotate selected model right around Y axis
+        mat4.rotateY(transformMatrix, transformMatrix, -rotateIncrement);
+      }
+      if(currentPressedKeys[79]){                                   // O --> rotate selected model forward around X
+        mat4.rotateX(transformMatrix, transformMatrix, rotateIncrement);
+      }
+      if(currentPressedKeys[76]){                                   // L --> rotate selected model backward around X
+        mat4.rotateX(transformMatrix, transformMatrix, -rotateIncrement);
+      }
+      if(currentPressedKeys[73]){                                   // I --> rotate selected model clockwise around Z
+        mat4.rotateZ(transformMatrix, transformMatrix, rotateIncrement);
+      }
+      if(currentPressedKeys[80]){                                   // P --> rotate selected model counter-clockwise around Z
+        mat4.rotateZ(transformMatrix, transformMatrix, -rotateIncrement);
+      }
+  
+      mat4.translate(transformMatrix, transformMatrix, [-mCenter[0], -mCenter[1], -mCenter[2]]);
+    }
 
 
   var center = vec3.create();
